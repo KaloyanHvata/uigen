@@ -282,31 +282,59 @@ const ContactForm = () => {
 export default ContactForm;`;
 
       case "card":
-        return `import React from 'react';
+        return `import { Star, ArrowRight, Zap, Shield, Globe } from 'lucide-react';
 
-const Card = ({ 
-  title = "Welcome to Our Service", 
-  description = "Discover amazing features and capabilities that will transform your experience.",
-  imageUrl,
-  actions 
-}) => {
+const features = [
+  { icon: Zap, title: 'Lightning Fast', desc: 'Optimized for speed at every layer of the stack.' },
+  { icon: Shield, title: 'Secure by Default', desc: 'Enterprise-grade security built in from day one.' },
+  { icon: Globe, title: 'Global Scale', desc: 'Deploy worldwide with automatic edge distribution.' },
+];
+
+const Card = () => {
   return (
-    <div className="bg-white rounded-lg shadow-md overflow-hidden">
-      {imageUrl && (
-        <img 
-          src={imageUrl} 
-          alt={title}
-          className="w-full h-48 object-cover"
-        />
-      )}
-      <div className="p-6">
-        <h3 className="text-xl font-semibold mb-2">{title}</h3>
-        <p className="text-gray-600 mb-4">{description}</p>
-        {actions && (
-          <div className="mt-4">
-            {actions}
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 to-indigo-950 flex items-center justify-center p-8">
+      <div className="w-full max-w-2xl">
+        <div className="bg-white/5 border border-white/10 rounded-2xl p-8 backdrop-blur-sm">
+          <div className="flex items-center gap-2 mb-2">
+            <span className="text-xs font-semibold bg-indigo-500/20 text-indigo-300 px-3 py-1 rounded-full">New</span>
+            <span className="text-xs text-slate-400">Just launched v2.0</span>
           </div>
-        )}
+          <h1 className="text-4xl font-bold text-white mt-4 mb-3 leading-tight">
+            Build faster.<br />Ship with confidence.
+          </h1>
+          <p className="text-slate-400 text-lg mb-8 leading-relaxed">
+            The platform that combines developer experience with enterprise reliability.
+            Start free, scale infinitely.
+          </p>
+
+          <div className="grid grid-cols-1 gap-4 mb-8">
+            {features.map(({ icon: Icon, title, desc }) => (
+              <div key={title} className="flex items-start gap-4 p-4 bg-white/5 rounded-xl hover:bg-white/10 transition-colors">
+                <div className="p-2 bg-indigo-500/20 rounded-lg flex-shrink-0">
+                  <Icon size={18} className="text-indigo-400" />
+                </div>
+                <div>
+                  <div className="text-white font-medium">{title}</div>
+                  <div className="text-slate-400 text-sm mt-0.5">{desc}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="flex gap-3">
+            <button className="flex-1 flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold py-3 px-6 rounded-xl active:scale-95 transition-all">
+              Get started free <ArrowRight size={16} />
+            </button>
+            <button className="px-6 py-3 rounded-xl border border-white/20 text-slate-300 hover:bg-white/10 transition-colors font-medium">
+              See demo
+            </button>
+          </div>
+
+          <div className="flex items-center gap-1 mt-4 text-sm text-slate-500">
+            {[...Array(5)].map((_, i) => <Star key={i} size={12} className="fill-yellow-400 text-yellow-400" />)}
+            <span className="ml-1">Trusted by 12,000+ teams</span>
+          </div>
+        </div>
       </div>
     </div>
   );
@@ -316,45 +344,76 @@ export default Card;`;
 
       default:
         return `import { useState } from 'react';
+import { Plus, Minus, RotateCcw, TrendingUp } from 'lucide-react';
 
 const Counter = () => {
   const [count, setCount] = useState(0);
+  const [history, setHistory] = useState([]);
 
-  const increment = () => {
-    setCount(count + 1);
-  };
-
-  const decrement = () => {
-    setCount(count - 1);
+  const change = (delta) => {
+    setCount(prev => {
+      const next = prev + delta;
+      setHistory(h => [...h.slice(-4), { value: next, delta }]);
+      return next;
+    });
   };
 
   const reset = () => {
     setCount(0);
+    setHistory([]);
   };
 
+  const isPositive = count > 0;
+  const isNegative = count < 0;
+
   return (
-    <div className="flex flex-col items-center p-6 bg-white rounded-lg shadow-md">
-      <h2 className="text-2xl font-bold mb-4">Counter</h2>
-      <div className="text-4xl font-bold mb-6">{count}</div>
-      <div className="flex gap-4">
-        <button 
-          onClick={decrement}
-          className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition-colors"
-        >
-          Decrease
-        </button>
-        <button 
-          onClick={reset}
-          className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 transition-colors"
-        >
-          Reset
-        </button>
-        <button 
-          onClick={increment}
-          className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition-colors"
-        >
-          Increase
-        </button>
+    <div className="min-h-screen bg-slate-50 flex items-center justify-center p-8">
+      <div className="w-full max-w-sm">
+        <div className="bg-white rounded-2xl shadow-md p-8">
+          <div className="flex items-center gap-2 mb-6">
+            <TrendingUp className="text-indigo-500" size={20} />
+            <h2 className="text-lg font-semibold text-slate-700">Counter</h2>
+          </div>
+
+          <div className={\`text-7xl font-bold text-center mb-2 transition-colors \${
+            isPositive ? 'text-indigo-600' : isNegative ? 'text-rose-500' : 'text-slate-800'
+          }\`}>
+            {count > 0 ? '+' : ''}{count}
+          </div>
+
+          {history.length > 0 && (
+            <div className="flex justify-center gap-1 mb-6">
+              {history.map((h, i) => (
+                <span key={i} className={\`text-xs px-2 py-0.5 rounded-full \${
+                  h.delta > 0 ? 'bg-indigo-100 text-indigo-600' : 'bg-rose-100 text-rose-500'
+                }\`}>
+                  {h.delta > 0 ? '+' : ''}{h.delta}
+                </span>
+              ))}
+            </div>
+          )}
+
+          <div className="flex gap-3 mt-6">
+            <button
+              onClick={() => change(-1)}
+              className="flex-1 flex items-center justify-center gap-1.5 py-3 rounded-xl bg-slate-100 text-slate-700 font-medium hover:bg-slate-200 active:scale-95 transition-all"
+            >
+              <Minus size={16} /> Dec
+            </button>
+            <button
+              onClick={reset}
+              className="py-3 px-4 rounded-xl bg-slate-100 text-slate-500 hover:bg-slate-200 active:scale-95 transition-all"
+            >
+              <RotateCcw size={16} />
+            </button>
+            <button
+              onClick={() => change(1)}
+              className="flex-1 flex items-center justify-center gap-1.5 py-3 rounded-xl bg-indigo-600 text-white font-medium hover:bg-indigo-700 active:scale-95 transition-all"
+            >
+              <Plus size={16} /> Inc
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );
@@ -391,34 +450,14 @@ export default Counter;`;
       return `import Card from '@/components/Card';
 
 export default function App() {
-  return (
-    <div className="min-h-screen bg-gray-100 flex items-center justify-center p-8">
-      <div className="w-full max-w-md">
-        <Card 
-          title="Amazing Product"
-          description="This is a fantastic product that will change your life. Experience the difference today!"
-          actions={
-            <button className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors">
-              Learn More
-            </button>
-          }
-        />
-      </div>
-    </div>
-  );
+  return <Card />;
 }`;
     }
 
     return `import ${componentName} from '@/components/${componentName}';
 
 export default function App() {
-  return (
-    <div className="min-h-screen bg-gray-100 flex items-center justify-center p-8">
-      <div className="w-full max-w-md">
-        <${componentName} />
-      </div>
-    </div>
-  );
+  return <${componentName} />;
 }`;
   }
 
